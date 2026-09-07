@@ -1,0 +1,13 @@
+{
+  "name": "javad-hamedi-amlak",
+  "version": "1.0.0",
+  "description": "وب‌سایت املاک جواد حامدی — سایت استاتیک با HTML/CSS/JavaScript، بدون هیچ پکیج خارجی",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {}
+}
