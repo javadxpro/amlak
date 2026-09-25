@@ -2,14 +2,14 @@
   "properties": [
     {
       "id": 1,
-      "title": "آپارتمان ۸۵ متری کوی دانیال",
+      "title": "آپارتمان ۹۵ متری کوی دانیال",
       "neighborhood": "کوی دانیال، بلوار کشاورز",
       "deal": "sale",
       "type": "apartment",
-      "area": 85,
-      "rooms": 2,
+      "area": 95,
+      "rooms": 3,
       "floor": "۲ از ۴",
-      "buildYear": 1398,
+      "buildYear": 1391,
       "price": 680000000,
       "pricePerMeter": 8000000,
       "deposit": 0,
