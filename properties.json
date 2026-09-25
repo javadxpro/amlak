@@ -18,6 +18,7 @@
       "parking": true,
       "elevator": false,
       "storage": true,
+      "shenazh": false,
       "image": "logo",
       "description": "آپارتمان دوخوابه تمیز و نورگیر در کوی دانیال، چند قدم تا بلوار کشاورز و میدان گلخانه. دسترسی عالی به بازار، مدرسه و ایستگاه اتوبوس؛ مناسب زوج‌های جوان.",
       "features": [
@@ -45,6 +46,7 @@
       "parking": true,
       "elevator": true,
       "storage": true,
+      "shenazh": true,
       "image": "logo",
       "description": "آپارتمان دوخوابه داخل شهرک دانیال و در کوچه‌ای آرام؛ نزدیک دادگستری شوش، فنی و حرفه‌ای و بیمارستان نظام مافی. با آسانسور و پارکینگ، آماده سکونت.",
       "features": [
@@ -73,6 +75,7 @@
       "parking": false,
       "elevator": false,
       "storage": false,
+      "shenazh": false,
       "image": "logo",
       "description": "خانه کلنگی با برِ زمین عالی و سند تک‌برگ داخل کوچه ۱۰ متری؛ مناسب ساخت آپارتمان ۴ واحدی. نقشه و راهنمای مجوز ساخت هم توسط مشاور ارائه می‌شود.",
       "features": [
@@ -100,6 +103,7 @@
       "parking": false,
       "elevator": false,
       "storage": false,
+      "shenazh": false,
       "image": "logo",
       "description": "قطعه زمین ۳۰۰ متری مسطح برِ بلوار قانون با سند تک‌برگ و انشعاب آب، برق و گاز؛ آماده ساخت. موقعیت خوبی نزدیک پمپ بنزین ثامن و اداره راه و شهرسازی.",
       "features": [
@@ -127,6 +131,7 @@
       "parking": false,
       "elevator": false,
       "storage": false,
+      "shenazh": true,
       "image": "logo",
       "description": "مغازه ۲۵ متری با سرنفه عالی و ویترین شیشه‌ای در پرترددترین قسمت بلوار کشاورز؛ مناسب هر نوع کسب‌وکار. سند تجاری و قابل معاوضه با ملک مسکونی.",
       "features": [
@@ -154,6 +159,7 @@
       "parking": false,
       "elevator": false,
       "storage": true,
+      "shenazh": true,
       "image": "logo",
       "description": "آپارتمان دوخوابه تمیز و بازسازی‌شده برای اجاره با شرایط مناسب؛ نزدیک بازار و مراکز خرید روزانه. قرارداد رسمی و تحویل فوری.",
       "features": [
@@ -181,6 +187,7 @@
       "parking": true,
       "elevator": false,
       "storage": true,
+      "shenazh": true,
       "image": "logo",
       "description": "خانه ویلایی با حیاط سرسبز داخل کوچه‌ای آرام و امن؛ مناسب خانواده‌های چندنفره که دنبال سکونت آروم هستند. پارکینگ حیاطی و انباری دارد.",
       "features": [
@@ -208,6 +215,7 @@
       "parking": true,
       "elevator": true,
       "storage": true,
+      "shenazh": true,
       "image": "logo",
       "description": "آپارتمان کاملاً نوساز برِ خیابان اصلی، چند قدم تا بیمارستان نظام مافی؛ با آسانسور، پارکینگ و تحویل فوری. فوق‌العاده برای سکونت و سرمایه‌گذاری.",
       "features": [
@@ -235,6 +243,7 @@
       "parking": true,
       "elevator": false,
       "storage": true,
+      "shenazh": true,
       "image": "logo",
       "description": "باغ‌ویلای دوطبقه با باغ مرکبات و نخل، آلاچیق و حیاط بزرگ در هوای خوش حومه شوش؛ داخل جاده فرعی و دور از شلوغی. مناسب سکونت و تعطیلات.",
       "features": [
@@ -262,6 +271,7 @@
       "parking": false,
       "elevator": false,
       "storage": false,
+      "shenazh": false,
       "image": "logo",
       "description": "سوئیت یک‌خوابه کامل با کنتور جدا برای اجاره؛ مناسب زوج‌های جوان یا کارمندانی که دنبال اقامت اقتصادی نزدیک مرکز شهر هستند.",
       "features": [

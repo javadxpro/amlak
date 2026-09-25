@@ -89,6 +89,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdro
 .b-alley{background:#fef3c7;color:#92400e}
 .b-street{background:#ecfdf5;color:#065f46}
 .b-new{background:#111827;color:#fff}
+.b-shenazh{background:#ede9fe;color:#5b21b6}
 .specs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
 .sp{background:#f1f6f3;border-radius:8px;padding:2px 8px;font-size:11px;color:var(--muted)}
 .sp b{color:var(--ink);font-size:12px}
@@ -236,6 +237,14 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdro
         </select>
       </div>
       <div class="fi">
+        <label for="fshenazh">شناژبندی</label>
+        <select id="fshenazh">
+          <option value="all">همه</option>
+          <option value="yes">دارد</option>
+          <option value="no">ندارد</option>
+        </select>
+      </div>
+      <div class="fi">
         <label for="famin">متراژ از</label>
         <input id="famin" type="text" inputmode="numeric" placeholder="مثلاً ۸۰">
       </div>
@@ -305,7 +314,7 @@ const PRIMARY_URL='https://raw.githubusercontent.com/javadxpro/amlak/refs/heads/
 const FALLBACK_URL='https://javadxpro.github.io/amlak/properties.json';
 
 // 20-field order as per spec
-const FIELD_ORDER=["id","title","neighborhood","deal","type","area","rooms","floor","buildYear","price","pricePerMeter","deposit","rent","inAlley","parking","elevator","storage","image","description","features"];
+const FIELD_ORDER=["id","title","neighborhood","deal","type","area","rooms","floor","buildYear","price","pricePerMeter","deposit","rent","inAlley","parking","elevator","storage","shenazh","image","description","features"];
 
 const TYPES={apartment:'آپارتمان',villa:'ویلا / خانه',land:'زمین',shop:'مغازه'};
 const FA='۰۱۲۳۴۵۶۷۸۹';
@@ -376,6 +385,7 @@ function normalize(p,i){
     park:!!p.parking,
     elv:!!p.elevator,
     stor:!!p.storage,
+    shenazh:!!(p.shenazh||p.shenazhBandi||p.shanage||p.foundation),
     img:(typeof p.image==='string'&&p.image&&p.image!=='logo')?p.image:'logo',
     desc:String(p.description||''),
     feat:Array.isArray(p.features)?p.features.map(String):[]
@@ -390,7 +400,7 @@ function parseData(txt){
   return d.map(normalize);
 }
 function toOrderedProperty(p){
-  // p is normalized internal, convert to 20-field ordered object matching spec
+  // p is normalized internal, convert to 21-field ordered object (now includes shenazh)
   const o={};
   o.id=p.id;
   o.title=p.t;
@@ -409,6 +419,7 @@ function toOrderedProperty(p){
   o.parking=p.park;
   o.elevator=p.elv;
   o.storage=p.stor;
+  o.shenazh=p.shenazh;
   o.image=p.img;
   o.description=p.desc;
   o.features=p.feat;
@@ -433,7 +444,8 @@ function badges(p){
   const d=p.deal==='sale'?'<span class="b b-sale">فروش</span>':'<span class="b b-rent">رهن و اجاره</span>';
   const a=p.alley?'<span class="b b-alley">داخل کوچه</span>':'<span class="b b-street">برِ خیابان</span>';
   const n=(p.year&&p.year>=1403)?'<span class="b b-new">نوساز</span>':'';
-  return d+a+n;
+  const sh=p.shenazh?'<span class="b b-shenazh">شناژبندی</span>':'';
+  return d+a+n+sh;
 }
 function priceBlock(p){
   if(p.deal==='sale')return `<div class="price">${money(p.price)} <small>تومان</small><span class="sub">${p.ppm?'متری '+money(p.ppm):'&nbsp;'}</span></div>`;
@@ -467,7 +479,7 @@ function cardHTML(p){
 // ---------- filtering ----------
 function apply(){
   const q=normTxt($('#fq').value);
-  const type=$('#ftype').value, alley=$('#falley').value, rooms=$('#frooms').value;
+  const type=$('#ftype').value, alley=$('#falley').value, rooms=$('#frooms').value, shenazh=$('#fshenazh')?$('#fshenazh').value:'all';
   const amin=num($('#famin').value), amax=num($('#famax').value);
   const sort=$('#fsort').value;
   let list=P.filter(p=>{
@@ -476,10 +488,12 @@ function apply(){
     if(alley==='alley'&&!p.alley)return false;
     if(alley==='street'&&p.alley)return false;
     if(rooms!=='all'){if(rooms==='4'){if(p.rooms<4)return false}else if(p.rooms!==+rooms)return false;}
+    if(shenazh==='yes'&&!p.shenazh)return false;
+    if(shenazh==='no'&&p.shenazh)return false;
     if(amin!==null&&p.area<amin)return false;
     if(amax!==null&&p.area>amax)return false;
     if(q){
-      const hay=normTxt(p.t+' '+p.hood+' '+TYPES[p.type]+' '+p.desc+' '+(p.alley?'داخل کوچه':'بر خیابان'));
+      const hay=normTxt(p.t+' '+p.hood+' '+TYPES[p.type]+' '+p.desc+' '+(p.alley?'داخل کوچه':'بر خیابان')+' '+(p.shenazh?'شناژبندی شناژ':''));
       if(!hay.includes(q))return false;
     }
     return true;
@@ -500,7 +514,7 @@ function setDeal(v){
   apply();
 }
 function resetFilters(){
-  $('#fq').value='';$('#ftype').value='all';$('#falley').value='all';$('#frooms').value='all';
+  $('#fq').value='';$('#ftype').value='all';$('#falley').value='all';$('#frooms').value='all';if($('#fshenazh'))$('#fshenazh').value='all';
   $('#famin').value='';$('#famax').value='';$('#fsort').value='new';
   setDeal('all');
 }
@@ -516,6 +530,7 @@ function openModal(id){
     ['پارکینگ',p.park?'دارد':'ندارد'],
     ['آسانسور',p.elv?'دارد':'ندارد'],
     ['انباری',p.stor?'دارد':'ندارد'],
+    ['شناژبندی',p.shenazh?'دارد':'ندارد'],
     ['موقعیت',p.alley?'داخل کوچه':'برِ خیابان اصلی']
   ];
   const priceBox=p.deal==='sale'
@@ -567,6 +582,7 @@ function buildFormFields(){
     {k:'parking',label:'پارکینگ دارد؟ (parking)',type:'checkbox'},
     {k:'elevator',label:'آسانسور دارد؟ (elevator)',type:'checkbox'},
     {k:'storage',label:'انباری دارد؟ (storage)',type:'checkbox'},
+    {k:'shenazh',label:'شناژبندی دارد؟ (shenazh)',type:'checkbox'},
     {k:'image',label:'تصویر (image)',type:'text',hint:'مقدار logo یعنی لوگوی سایت'},
     {k:'description',label:'توضیحات (description)',type:'textarea',full:true},
     {k:'features',label:'امکانات (features) — هر مورد در یک خط',type:'textarea',full:true}
@@ -623,6 +639,7 @@ function openForm(isEdit, data){
     $('#f_parking').checked=p.park;
     $('#f_elevator').checked=p.elv;
     $('#f_storage').checked=p.stor;
+    $('#f_shenazh').checked=p.shenazh;
     $('#f_image').value=p.img;
     $('#f_description').value=p.desc;
     $('#f_features').value=p.feat.join('\n');
@@ -646,12 +663,13 @@ function openForm(isEdit, data){
     $('#f_parking').checked=false;
     $('#f_elevator').checked=false;
     $('#f_storage').checked=false;
+    $('#f_shenazh').checked=false;
     $('#f_image').value='logo';
     $('#f_description').value='';
     $('#f_features').value='';
     $('#f_id').disabled=false;
   }
-  $('#formHint').textContent='ترتیب کلیدها در خروجی دقیقاً مطابق properties.json اصلی حفظ می‌شود (۲۰ فیلد).';
+  $('#formHint').textContent='ترتیب کلیدها در خروجی دقیقاً مطابق properties.json اصلی حفظ می‌شود (۲۱ فیلد با شناژبندی).';
   $('#formModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -678,6 +696,7 @@ function collectForm(){
     const parking=$('#f_parking').checked;
     const elevator=$('#f_elevator').checked;
     const storage=$('#f_storage').checked;
+    const shenazh=$('#f_shenazh').checked;
     const image=$('#f_image').value.trim()||'logo';
     const desc=$('#f_description').value.trim();
     const featRaw=$('#f_features').value.split('\n').map(s=>s.trim()).filter(s=>s);
@@ -700,6 +719,7 @@ function collectForm(){
       park:parking,
       elv:elevator,
       stor:storage,
+      shenazh:shenazh,
       img:image,
       desc:desc,
       feat:featRaw
@@ -791,7 +811,7 @@ async function fetchRemote(){
 
 // ---------- events ----------
 $('#fdeal').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setDeal(b.dataset.v);});
-['fq','ftype','falley','frooms','famin','famax','fsort'].forEach(id=>{
+['fq','ftype','falley','frooms','fshenazh','famin','famax','fsort'].forEach(id=>{
   const el=$('#'+id); if(el){el.addEventListener('input',apply); el.addEventListener('change',apply);}
 });
 $('#freset').addEventListener('click',resetFilters);

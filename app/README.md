@@ -7,8 +7,8 @@
   - رنگ‌ها: `--brand:#0e7a5f`, `--brand-2:#0a5c47`, `--brand-dark:#0b3b31`, `--gold:#d9a13b`, `--bg:#f4f7f5` و...
   - برند: املاک جواد حامدی - شوش دانیال
   - فرمت قیمت: همان تابع `money()` سایت (میلیارد/میلیون/هزار با اعداد فارسی)
-  - اسکیمای ۲۰ فیلدی `properties.json` با همان ترتیب کلیدها:
-    `id, title, neighborhood, deal, type, area, rooms, floor, buildYear, price, pricePerMeter, deposit, rent, inAlley, parking, elevator, storage, image, description, features`
+  - اسکیمای ۲۱ فیلدی `properties.json` با همان ترتیب کلیدها (جدید: `shenazh` برای شناژبندی):
+    `id, title, neighborhood, deal, type, area, rooms, floor, buildYear, price, pricePerMeter, deposit, rent, inAlley, parking, elevator, storage, shenazh, image, description, features`
 
 - دریافت لیست از:
   - `https://raw.githubusercontent.com/javadxpro/amlak/refs/heads/main/properties.json`
@@ -16,8 +16,8 @@
   - در صورت آفلاین بودن، از حافظه محلی (localStorage)
 
 - قابلیت‌ها:
-  - افزودن/ویرایش/حذف ملک
-  - جستجو و فیلتر (نوع معامله، نوع ملک، موقعیت، خواب، متراژ)
+  - افزودن/ویرایش/حذف ملک (شامل شناژبندی)
+  - جستجو و فیلتر (نوع معامله، نوع ملک، موقعیت، خواب، متراژ، شناژبندی)
   - دکمه «استخراج» که فایل را در `/storage/emulated/0/Documents/properties.json` می‌نویسد:
     - اندروید ۱۰+ (API 29+): با MediaStore
     - قدیمی‌تر: با مجوز `WRITE_EXTERNAL_STORAGE`
