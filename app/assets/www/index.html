@@ -266,6 +266,10 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.93);backdro
   </div>
 
   <div class="grid" id="grid"></div>
+  <div style="text-align:center;margin:20px 0 10px">
+    <button class="btn btn-gold" id="loadmore" type="button" style="display:none">نمایش بیشتر (۱۲ تای بعدی) ↓</button>
+    <div id="pageinfo" style="margin-top:8px;font-size:11.5px;color:var(--muted)"></div>
+  </div>
   <div class="empty" id="empty">
     <h3>ملکی یافت نشد</h3>
     <p>فیلترها را تغییر دهید یا ملک جدید اضافه کنید.</p>
@@ -476,7 +480,37 @@ function cardHTML(p){
   </article>`;
 }
 
-// ---------- filtering ----------
+// ---------- filtering — نامحدود ----------
+let filteredList=[];
+let currentPage=1;
+const PAGE_SIZE=12;
+
+function renderCurrent(){
+  const total=filteredList.length;
+  const showCount=Math.min(currentPage*PAGE_SIZE, total);
+  const slice=filteredList.slice(0, showCount);
+  $('#grid').innerHTML=slice.map(cardHTML).join('');
+  $('#count').innerHTML=`<b>${faNum(total)}</b> از ${faNum(P.length)} — نمایش ${faNum(showCount)}`;
+  $('#empty').style.display=total?'none':'block';
+  const lm=$('#loadmore');
+  const pi=$('#pageinfo');
+  if(lm){
+    if(showCount<total){
+      lm.style.display='inline-flex';
+      lm.textContent=`نمایش بیشتر (${faNum(Math.min(PAGE_SIZE, total-showCount))} تای بعدی) ↓`;
+    }else{
+      lm.style.display='none';
+    }
+  }
+  if(pi){
+    if(total>PAGE_SIZE){
+      pi.textContent=`صفحه ${faNum(currentPage)} از ${faNum(Math.ceil(total/PAGE_SIZE))} — بدون محدودیت، ${faNum(P.length)} ملک کل`;
+    }else{
+      pi.textContent=total>0?`همه ${faNum(total)} نمایش داده شد — بی‌نهایت ملک می‌توانید اضافه کنید`:'';
+    }
+  }
+}
+
 function apply(){
   const q=normTxt($('#fq').value);
   const type=$('#ftype').value, alley=$('#falley').value, rooms=$('#frooms').value, shenazh=$('#fshenazh')?$('#fshenazh').value:'all';
@@ -503,9 +537,9 @@ function apply(){
   else if(sort==='exp')list.sort((a,b)=>priceOf(b)-priceOf(a));
   else if(sort==='area')list.sort((a,b)=>b.area-a.area);
   else list.sort((a,b)=>(b.year||0)-(a.year||0)||b.id-a.id);
-  $('#grid').innerHTML=list.map(cardHTML).join('');
-  $('#count').innerHTML=`<b>${faNum(list.length)}</b> ملک از ${faNum(P.length)} ثبت‌شده`;
-  $('#empty').style.display=list.length?'none':'block';
+  filteredList=list;
+  currentPage=1;
+  renderCurrent();
 }
 
 function setDeal(v){
@@ -815,6 +849,8 @@ $('#fdeal').addEventListener('click',e=>{const b=e.target.closest('button');if(b
   const el=$('#'+id); if(el){el.addEventListener('input',apply); el.addEventListener('change',apply);}
 });
 $('#freset').addEventListener('click',resetFilters);
+const lmBtn=$('#loadmore');
+if(lmBtn){lmBtn.addEventListener('click',()=>{currentPage++;renderCurrent();});}
 $('#grid').addEventListener('click',e=>{
   const ed=e.target.closest('[data-edit]');
   if(ed){e.stopPropagation();editProperty(+ed.dataset.edit);return;}
