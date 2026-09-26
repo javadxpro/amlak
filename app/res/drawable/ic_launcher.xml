@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path android:fillColor="#201f1c" android:pathData="M0,0h512v512h-512z"/>
+    <path android:fillColor="#171614" android:pathData="M0,0h512v512h-512z" android:fillAlpha="0.85"/>
+    <!-- simplified logo: house roof -->
+    <path android:fillColor="#00000000" android:strokeColor="#c9962e" android:strokeWidth="16" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M88,330L256,246L424,330"/>
+    <path android:fillColor="#00000000" android:strokeColor="#c9962e" android:strokeWidth="16" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M150,299V150h16v20h22v-20h16v122"/>
+    <path android:fillColor="#00000000" android:strokeColor="#c9962e" android:strokeWidth="16" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M226,261V96h18v22h24V96h18v165"/>
+    <path android:fillColor="#00000000" android:strokeColor="#c9962e" android:strokeWidth="16" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M308,272V132h16v20h22v-20h16v167"/>
+    <path android:fillColor="#c9962e" android:pathData="M233,282h18v18h-18z"/>
+    <path android:fillColor="#c9962e" android:pathData="M261,282h18v18h-18z"/>
+    <path android:fillColor="#c9962e" android:pathData="M233,310h18v18h-18z"/>
+    <path android:fillColor="#c9962e" android:pathData="M261,310h18v18h-18z"/>
+</vector>
