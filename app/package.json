@@ -1,0 +1,17 @@
+{
+  "name": "amlak-hamedi-android",
+  "version": "1.0.0",
+  "description": "اپلیکیشن اندروید املاک حامدی - ساخت بدون SDK با minapk و aaptjs3",
+  "private": true,
+  "scripts": {
+    "build": "bash build.sh",
+    "clean": "rm -rf build"
+  },
+  "dependencies": {
+    "@drxiaozhi/minapk": "0.4.0",
+    "aaptjs3": "2.0.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
