@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://javadxpro.github.io/amlak/sitemap.xml
+
+# املاک جواد حامدی - شوش دانیال
+# https://javadxpro.github.io/amlak/
