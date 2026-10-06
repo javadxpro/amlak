@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="املاک جواد حامدی — خرید، فروش و رهن و اجاره ملک در شوش دانیال؛ جستجو با فیلتر متراژ، قیمت و موقعیت (داخل کوچه / برِ خیابان اصلی)">
 <meta name="theme-color" content="#0b3b31">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <title>املاک جواد حامدی | شوش دانیال</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22 width=%22512%22 height=%22512%22 role=%22img%22 aria-label=%22%D8%A7%D9%85%D9%84%D8%A7%DA%A9 %D8%AC%D9%88%D8%A7%D8%AF %D8%AD%D8%A7%D9%85%D8%AF%DB%8C%22%3E%3Cdefs%3E%3CradialGradient id=%22vbg%22 cx=%2250%25%22 cy=%2245%25%22 r=%2272%25%22%3E%3Cstop offset=%220%22 stop-color=%22%232a2926%22/%3E%3Cstop offset=%221%22 stop-color=%22%23171614%22/%3E%3C/radialGradient%3E%3ClinearGradient id=%22vau%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%238a5a13%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%23c9962e%22/%3E%3Cstop offset=%221%22 stop-color=%22%23e8c56a%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 fill=%22%23201f1c%22/%3E%3Crect width=%22512%22 height=%22512%22 fill=%22url(%23vbg)%22/%3E%3Cg transform=%22translate(256 256) scale(1.2) translate(-256 -213)%22%3E%3Cg fill=%22none%22 stroke=%22url(%23vau)%22 stroke-width=%2216%22 stroke-linejoin=%22round%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M150 299V150h16v20h22v-20h16v122M226 261V96h18v22h24V96h18v165M308 272V132h16v20h22v-20h16v167%22/%3E%3Cpath d=%22M150 214h54M226 176h60M308 200h54%22 stroke-width=%2212%22 opacity=%22.85%22/%3E%3Cpath d=%22M88 330L256 246L424 330%22/%3E%3C/g%3E%3Cg fill=%22url(%23vau)%22%3E%3Crect x=%22233%22 y=%22282%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3Crect x=%22261%22 y=%22282%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3Crect x=%22233%22 y=%22310%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3Crect x=%22261%22 y=%22310%22 width=%2218%22 height=%2218%22 rx=%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
 <style>
@@ -186,6 +188,24 @@ footer{background:#0b241f;color:#9db8af;margin-top:44px;font-size:13.5px}
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;scroll-behavior:auto!important}
 }
+
+/* ---------- new: map, sliders, calculator, request form ---------- */
+#map{height:380px;border-radius:16px;border:1px solid var(--line);box-shadow:var(--sh);margin:18px 0}
+.slider-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.slider-row input[type=range]{flex:1 1 120px;accent-color:var(--brand)}
+.calc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--sh);margin:18px 0}
+.calc h3{font-size:15px;margin-bottom:10px;color:var(--brand-dark)}
+.calc .frow{margin-bottom:8px}
+.calc .result{background:#f0f8f5;border-radius:10px;padding:10px 12px;font-size:13px;margin-top:10px;line-height:1.8}
+.req{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--sh);margin:18px 0}
+.req h3{font-size:15px;margin-bottom:10px;color:var(--brand-dark)}
+.badge-featured{background:#f59e0b;color:#fff}
+.badge-water{background:#06b6d4;color:#fff}
+.badge-elec{background:#facc15;color:#422006}
+.badge-gas{background:#f97316;color:#fff}
+.badge-dir{background:#a3e635;color:#1a2e05}
+.leaflet-popup-content{font-family:inherit;font-size:12.5px}
+
 </style>
 </head>
 <body id="top">
@@ -296,18 +316,55 @@ footer{background:#0b241f;color:#9db8af;margin-top:44px;font-size:13.5px}
           <div class="fi">
             <label for="famin">متراژ از (متر)</label>
             <input id="famin" type="text" inputmode="numeric" placeholder="مثلاً ۸۰">
+            <div class="slider-row"><input id="areaMinRange" type="range" min="0" max="500" value="0" step="10"></div>
           </div>
           <div class="fi">
             <label for="famax">متراژ تا (متر)</label>
             <input id="famax" type="text" inputmode="numeric" placeholder="مثلاً ۱۵۰">
+            <div class="slider-row"><input id="areaMaxRange" type="range" min="0" max="500" value="500" step="10"></div>
           </div>
           <div class="fi">
             <label for="fpmin" id="plabel">قیمت کل از (میلیون تومان)</label>
             <input id="fpmin" type="text" inputmode="numeric" placeholder="مثلاً ۵۰۰">
+            <div class="slider-row"><input id="priceMinRange" type="range" min="0" max="5000" value="0" step="50"></div>
           </div>
           <div class="fi">
             <label for="fpmax">تا (میلیون تومان)</label>
             <input id="fpmax" type="text" inputmode="numeric" placeholder="مثلاً ۱۵۰۰">
+            <div class="slider-row"><input id="priceMaxRange" type="range" min="0" max="5000" value="5000" step="50"></div>
+          </div>
+          <div class="fi">
+            <label for="fyard">حیاط</label>
+            <select id="fyard">
+              <option value="all">همه</option>
+              <option value="ماشین‌رو">ماشین‌رو</option>
+              <option value="موتوررو">موتوررو</option>
+              <option value="ندارد">بدون حیاط</option>
+            </select>
+          </div>
+          <div class="fi">
+            <label for="fhall">هال و پذیرایی</label>
+            <select id="fhall">
+              <option value="all">همه</option>
+              <option value="هال تنها">هال تنها</option>
+              <option value="هال و پذیرایی">هال و پذیرایی</option>
+            </select>
+          </div>
+          <div class="fi">
+            <label for="fcloset">کمد دیواری</label>
+            <select id="fcloset">
+              <option value="all">همه</option>
+              <option value="yes">دارد</option>
+              <option value="no">ندارد</option>
+            </select>
+          </div>
+          <div class="fi">
+            <label for="fcabinet">کابینت</label>
+            <select id="fcabinet">
+              <option value="all">همه</option>
+              <option value="yes">دارد</option>
+              <option value="no">ندارد</option>
+            </select>
           </div>
           <div class="fi">
             <label for="fyard">حیاط</label>
@@ -369,6 +426,8 @@ footer{background:#0b241f;color:#9db8af;margin-top:44px;font-size:13.5px}
       <div id="loaderr" class="note err" role="alert"></div>
       <div id="syncnote" class="note warn">⚠️ نسخه آفلاین: فایل باز شده از روی کامپیوتر است؛ تغییرات properties.json فقط بعد از آپلود روی گیت‌هاب نمایش داده می‌شود.</div>
     </div>
+
+    <div id="map"></div>
 
     <div class="grid" id="grid"></div>
 
@@ -624,6 +683,7 @@ function setDeal(v){
   curDeal=v;
   $$('#fdeal button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   $('#plabel').textContent=(v==='rent'?'ودیعه از':'قیمت کل از')+' (میلیون تومان)';
+  const ar=document.getElementById('areaMinRange'), ax=document.getElementById('areaMaxRange'), pr=document.getElementById('priceMinRange'), px=document.getElementById('priceMaxRange'); if(ar)ar.value=0; if(ax)ax.value=500; if(pr)pr.value=0; if(px)px.value=5000;
   apply();
 }
 function resetFilters(){
@@ -760,6 +820,174 @@ try{
 window.addEventListener('error',()=>{
   if(!P.length){const n=$('#loaderr');if(n&&!n.textContent){n.style.display='block';n.textContent='⚠️ یک خطای فنی رخ داد و لیست ملک‌ها لود نشد. صفحه را با Ctrl+Shift+R تازه‌سازی کن یا فایل‌ها را دوباره آپلود کن.';}}
 });
+
+/* ---------- sliders sync ---------- */
+function syncSliders(){
+  const mapIds=[['famin','areaMinRange'],['famax','areaMaxRange'],['fpmin','priceMinRange'],['fpmax','priceMaxRange']];
+  mapIds.forEach(([txt,range])=>{
+    const t=document.getElementById(txt), r=document.getElementById(range);
+    if(!t||!r)return;
+    r.addEventListener('input',()=>{t.value=r.value;apply();});
+    t.addEventListener('input',()=>{const v=num(t.value); if(v!==null){r.value=Math.min(Math.max(v, parseInt(r.min)), parseInt(r.max));}});
+  });
+}
+setTimeout(syncSliders, 100);
+
+/* ---------- map with Leaflet (بدون API Key) ---------- */
+let map, markers=[];
+function initMap(){
+  if(typeof L==='undefined'){setTimeout(initMap, 500);return;}
+  if(map)return;
+  const el=document.getElementById('map');
+  if(!el)return;
+  map=L.map('map').setView([32.194, 48.243], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© OpenStreetMap'
+  }).addTo(map);
+  renderMapMarkers();
+}
+function renderMapMarkers(){
+  if(!map)return;
+  markers.forEach(m=>map.removeLayer(m));
+  markers=[];
+  filteredList.slice(0,100).forEach(p=>{
+    if(p.lat && p.lng){
+      const m=L.marker([p.lat, p.lng]).addTo(map);
+      m.bindPopup(`<b>${esc(p.t)}</b><br>${esc(p.hood)}<br>${money(p.deal==='sale'?p.price:p.dep)} تومان<br><small>${esc(p.doc)} | ${esc(p.yard)} | ${esc(p.hall)}</small><br><a href="#" onclick="openModal(${p.id});return false">جزئیات</a> | <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank">مسیریابی</a>`);
+      markers.push(m);
+    }
+  });
+  if(markers.length){
+    const group=L.featureGroup(markers);
+    try{map.fitBounds(group.getBounds().pad(0.2));}catch(e){}
+  }
+}
+// hook renderCurrent to also update map
+const origRender=renderCurrent;
+renderCurrent=function(){
+  origRender();
+  renderMapMarkers();
+};
+setTimeout(initMap, 800);
+
+/* ---------- calculator رهن و اجاره ---------- */
+function calcMortgage(){
+  const dep=num($('#calcDep').value)||0;
+  const rent=num($('#calcRent').value)||0;
+  const rate=num($('#calcRate').value)||30;
+  // rate = هزار تومان اجاره به ازای هر میلیون رهن
+  const depM=dep; // میلیون
+  const rentM=rent; // میلیون? actually user enters میلیون, but rent usually میلیون, convert
+  // محاسبه: رهن کامل = ودیعه + اجاره*1000/rate*? Let's use formula: هر 1M رهن = rate هزار اجاره
+  // پس اجاره (هزار) = رهن(میلیون)*rate
+  // برای تبدیل: رهن معادل اجاره = اجاره(هزار)*1000/rate? need careful
+  // ساده: اگر اجاره به میلیون وارد شده، به هزار تبدیل: rent*1000 هزار
+  // رهن معادل = rent*1000 / rate
+  const rentK=rentM*1000; // هزار تومان
+  const depEquivFromRent=rate?rentK/rate:0;
+  const rentKEquivFromDep=depM*rate;
+  const totalDep=depM+depEquivFromRent;
+  const totalRentK=rentK+rentKEquivFromDep;
+  const totalRentM=totalRentK/1000;
+  const res=document.getElementById('calcResult');
+  if(res){
+    res.style.display='block';
+    res.innerHTML=`رهن کامل معادل: <b>${money(totalDep*1e6)}</b> تومان<br>اجاره کامل معادل: <b>${money(totalRentM*1e6)}</b> تومان در ماه<br><small>با نرخ هر ۱ میلیون رهن = ${faNum(rate)} هزار اجاره</small>`;
+  }
+  track('calc_mortgage', {dep:depM, rent:rentM, rate});
+}
+const calcBtn=document.getElementById('calcBtn');
+if(calcBtn)calcBtn.addEventListener('click', calcMortgage);
+
+/* ---------- request form ---------- */
+function sendRequest(){
+  const name=$('#reqName').value.trim()||'—';
+  const phone=$('#reqPhone').value.trim()||'—';
+  const deal=$('#reqDeal').value;
+  const type=$('#reqType').value;
+  const area=$('#reqArea').value.trim()||'—';
+  const budget=$('#reqBudget').value.trim()||'—';
+  const doc=$('#reqDoc').value||'فرقی نمی‌کند';
+  const yard=$('#reqYard').value||'فرقی نمی‌کند';
+  const desc=$('#reqDesc').value.trim()||'—';
+  const msg=`سلام املاک حامدی، درخواست ملک دارم:
+نام: ${name}
+شماره: ${phone}
+نوع معامله: ${deal==='sale'?'فروش':'رهن و اجاره'}
+نوع ملک: ${TYPES[type]||type}
+متراژ: ${area}
+بودجه: ${budget} میلیون
+سند: ${doc}
+حیاط: ${yard}
+توضیحات: ${desc}
+(از سایت ارسال شده)`;
+  const url='https://wa.me/989163456044?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+  toast('درخواست به واتساپ ارسال شد');
+  track('request_property', {deal,type,area,budget});
+}
+const reqBtn=document.getElementById('reqSend');
+if(reqBtn)reqBtn.addEventListener('click', sendRequest);
+
+/* ---------- simple analytics (محلی + umami) ---------- */
+function track(event, data){
+  try{
+    let logs=JSON.parse(localStorage.getItem('analytics_v2')||'[]');
+    logs.push({event, data:data||{}, time:new Date().toISOString(), url:location.href});
+    if(logs.length>1000)logs=logs.slice(-1000);
+    localStorage.setItem('analytics_v2', JSON.stringify(logs));
+  }catch(e){}
+  if(window.umami) try{umami.track(event, data);}catch(e){}
+  // console
+  console.log('[analytics]', event, data);
+}
+track('page_view', {count:P.length});
+const origOpenModal=openModal;
+openModal=function(id){
+  origOpenModal(id);
+  const p=P.find(x=>x.id===id);
+  if(p)track('property_view', {id:p.id, title:p.t});
+};
+// track filter changes
+['fq','ftype','falley','frooms','fshenazh','fdoc','fyard','fhall','fcloset','fcabinet','fwater','felec','fgas','fdir','ffeatured','famin','famax','fpmin','fpmax','fsort'].forEach(fid=>{
+  const el=document.getElementById(fid);
+  if(el) el.addEventListener('change', ()=>track('filter_change', {filter:fid, value:el.value}));
+});
+
+// umami analytics (simple, no cookie)
+(function(){
+  const s=document.createElement('script');
+  s.defer=true;
+  s.src='https://cloud.umami.is/script.js';
+  s.setAttribute('data-website-id','املاک-حامدی-placeholder');
+  // user can replace with real id, if not set, local analytics still works
+  document.head.appendChild(s);
+})();
+
+/* ---------- routing in modal ---------- */
+const origOpenModal2=origOpenModal;
+openModal=function(id){
+  origOpenModal2(id);
+  const p=P.find(x=>x.id===id);if(!p)return;
+  // add routing button after contact
+  setTimeout(()=>{
+    const mbox=document.getElementById('mbox');
+    if(!mbox)return;
+    const contact=mbox.querySelector('.mcontact');
+    if(!contact)return;
+    if(contact.querySelector('.route-btn'))return;
+    let routeUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.hood+' شوش')}`;
+    if(p.lat && p.lng) routeUrl=`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+    const btn=document.createElement('a');
+    btn.className='btn route-btn';
+    btn.style.background='#e0f2fe'; btn.style.color='#0c4a6e';
+    btn.href=routeUrl; btn.target='_blank'; btn.rel='noopener';
+    btn.innerHTML=`${ico('pin')} مسیریابی`;
+    btn.addEventListener('click', ()=>track('routing', {id:p.id}));
+    contact.appendChild(btn);
+  }, 100);
+};
+
 </script>
 </body>
 </html>
