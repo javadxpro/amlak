@@ -1,5 +1,5 @@
 // املاک حامدی - Service Worker برای PWA
-const CACHE_NAME = 'amlak-hamedi-v26-2024';
+const CACHE_NAME = 'amlak-hamedi-v27';
 const URLS_TO_CACHE = [
   './',
   './index.html',
@@ -68,7 +68,21 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // For other requests, cache first, then network
+  // صفحه‌ی اصلی (HTML): اول شبکه تا همیشه آخرین نسخه نمایش داده شود، بعد کش برای حالت آفلاین
+  if (req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/')) {
+    event.respondWith(
+      fetch(req)
+        .then(res => {
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, resClone));
+          return res;
+        })
+        .catch(() => caches.match(req).then(cached => cached || caches.match('./index.html') || caches.match('./')))
+    );
+    return;
+  }
+
+  // سایر درخواست‌ها: اول کش، بعد شبکه
   event.respondWith(
     caches.match(req)
       .then(cached => {
